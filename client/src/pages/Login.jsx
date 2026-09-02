@@ -5,56 +5,84 @@ import { useAuth } from '../hooks/useAuth';
 import { Utensils, Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 
 export const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // React useState Hook
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Custom Hook
   const { loginUser } = useAuth();
+
+  // React Router Hook
   const navigate = useNavigate();
 
+  // Handles changes in form fields
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((previousData) => ({
+      ...previousData,
+      [name]: value,
+    }));
+  };
+
+  // Handles form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', formData);
+
       loginUser(res.data);
+
       if (res.data.role === 'ADMIN') {
         navigate('/admin');
       } else {
         navigate('/menu');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password');
+      setError(
+        err.response?.data?.message || 'Invalid email or password'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleQuickAdminLogin = () => {
-    setEmail('admin@campuseats.edu');
-    setPassword('admin123');
+    setFormData({
+      email: 'admin@campuseats.edu',
+      password: 'admin123',
+    });
   };
 
   const handleQuickStudentLogin = () => {
-    setEmail('rahul@college.edu');
-    setPassword('student123');
+    setFormData({
+      email: 'rahul@college.edu',
+      password: 'student123',
+    });
   };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
-        
+
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center mx-auto shadow-lg shadow-amber-500/20">
             <Utensils className="w-6 h-6" />
           </div>
+
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">
             Welcome Back!
           </h1>
+
           <p className="text-xs text-slate-500">
             Log in to order food and track real-time canteen orders
           </p>
@@ -65,6 +93,7 @@ export const Login = () => {
           <span className="text-[10px] font-extrabold uppercase text-amber-800 tracking-wider block">
             ⚡ Quick Demo Credentials:
           </span>
+
           <div className="flex gap-2">
             <button
               type="button"
@@ -73,6 +102,7 @@ export const Login = () => {
             >
               Student Demo
             </button>
+
             <button
               type="button"
               onClick={handleQuickAdminLogin}
@@ -91,42 +121,52 @@ export const Login = () => {
           </div>
         )}
 
-        {/* Form */}
+        {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Email */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               College Email
             </label>
+
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+
               <input
                 type="email"
+                name="email"
                 required
                 placeholder="student@college.edu"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
               />
             </div>
           </div>
 
+          {/* Password */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Password
             </label>
+
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+
               <input
                 type="password"
+                name="password"
                 required
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
               />
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -135,12 +175,16 @@ export const Login = () => {
             {loading ? 'Authenticating...' : 'Log In'}
             <ArrowRight className="w-4 h-4" />
           </button>
+
         </form>
 
         {/* Register Link */}
         <div className="text-center text-xs text-slate-500 pt-2">
           Don't have an account?{' '}
-          <Link to="/register" className="font-bold text-amber-800 hover:underline">
+          <Link
+            to="/register"
+            className="font-bold text-amber-800 hover:underline"
+          >
             Register Here
           </Link>
         </div>
