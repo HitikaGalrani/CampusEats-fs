@@ -5,7 +5,7 @@ import api from '../services/api';
 import { useSocket } from '../hooks/useSocket';
 import { updateLiveOrderStatus } from '../store/slices/orderSlice';
 import { OrderStatusTracker } from '../components/order/OrderStatusTracker';
-import { Clock, RefreshCw, Sparkles, ArrowLeft, History, BellAlert } from 'lucide-react';
+import { Clock, RefreshCw, Sparkles, ArrowLeft, History, Bell } from 'lucide-react';
 
 export const LiveOrderTracking = () => {
   const [searchParams] = useSearchParams();
