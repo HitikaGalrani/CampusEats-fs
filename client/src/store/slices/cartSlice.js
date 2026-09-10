@@ -1,3 +1,5 @@
+// cart slice configuration for CampusEats Experiment 3
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const cartFromStorage = localStorage.getItem('cartItems')
