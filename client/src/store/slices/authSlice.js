@@ -1,3 +1,5 @@
+// authentication slice configuration for CampusEats Experiment 3
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

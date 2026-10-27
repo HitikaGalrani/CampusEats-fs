@@ -1,4 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setMenuItems,
+  setCategories,
+  setSelectedCategory,
+  setSearchQuery,
+  setSortBy,
+  setAvailableOnly,
+  setMenuLoading,
+  setMenuError,
+} from '../store/slices/menuSlice';
 import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { FoodCard } from '../components/food/FoodCard';
@@ -21,7 +32,8 @@ const demoItems = [
   {
     _id: 'food-1',
     name: 'Masala Dosa',
-    description: 'Crispy South Indian dosa filled with spicy potato masala, served with sambar and chutney.',
+    description:
+      'Crispy South Indian dosa filled with spicy potato masala, served with sambar and chutney.',
     price: 80,
     rating: 4.7,
     isAvailable: true,
@@ -30,11 +42,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-2',
     name: 'Veg Sandwich',
-    description: 'Fresh grilled sandwich loaded with vegetables, cheese and delicious sauces.',
+    description:
+      'Fresh grilled sandwich loaded with vegetables, cheese and delicious sauces.',
     price: 60,
     rating: 4.5,
     isAvailable: true,
@@ -42,11 +54,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-3',
     name: 'Samosa',
-    description: 'Crispy golden samosa stuffed with spicy potatoes and peas.',
+    description:
+      'Crispy golden samosa stuffed with spicy potatoes and peas.',
     price: 25,
     rating: 4.6,
     isAvailable: true,
@@ -54,11 +66,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-4',
     name: 'Cold Coffee',
-    description: 'Chilled creamy cold coffee, perfect for a refreshing campus break.',
+    description:
+      'Chilled creamy cold coffee, perfect for a refreshing campus break.',
     price: 70,
     rating: 4.8,
     isAvailable: true,
@@ -67,11 +79,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-5',
     name: 'Veg Biryani',
-    description: 'Aromatic basmati rice cooked with fresh vegetables and Indian spices.',
+    description:
+      'Aromatic basmati rice cooked with fresh vegetables and Indian spices.',
     price: 120,
     rating: 4.6,
     isAvailable: true,
@@ -79,11 +91,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-6',
     name: 'Pav Bhaji',
-    description: 'Mumbai-style spicy vegetable bhaji served with buttery toasted pav.',
+    description:
+      'Mumbai-style spicy vegetable bhaji served with buttery toasted pav.',
     price: 90,
     rating: 4.7,
     isAvailable: true,
@@ -91,11 +103,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-7',
     name: 'French Fries',
-    description: 'Crispy golden potato fries seasoned perfectly for a quick snack.',
+    description:
+      'Crispy golden potato fries seasoned perfectly for a quick snack.',
     price: 50,
     rating: 4.4,
     isAvailable: true,
@@ -103,11 +115,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-8',
     name: 'Mango Shake',
-    description: 'Thick, creamy and refreshing mango milkshake.',
+    description:
+      'Thick, creamy and refreshing mango milkshake.',
     price: 80,
     rating: 4.5,
     isAvailable: false,
@@ -115,23 +127,24 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-9',
     name: 'Vada Pav',
-    description: 'Classic Mumbai street food with crispy batata vada, soft pav and chutneys.',
+    description:
+      'Classic Mumbai street food with crispy batata vada, soft pav and chutneys.',
     price: 40,
     rating: 4.9,
     isAvailable: true,
     isSpecial: true,
     category: { _id: 'snacks', name: 'Snacks' },
-    image: 'https://stat.ameba.jp/user_images/20190824/08/maruyamashu/f8/cd/j/o0940062614548956782.jpg',
+    image:
+      'https://stat.ameba.jp/user_images/20190824/08/maruyamashu/f8/cd/j/o0940062614548956782.jpg',
   },
-
   {
     _id: 'food-10',
     name: 'Schezwan Rice',
-    description: 'Spicy Indo-Chinese fried rice tossed with vegetables and Schezwan sauce.',
+    description:
+      'Spicy Indo-Chinese fried rice tossed with vegetables and Schezwan sauce.',
     price: 100,
     rating: 4.6,
     isAvailable: true,
@@ -139,11 +152,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-11',
     name: 'Schezwan Noodles',
-    description: 'Stir-fried noodles tossed with crunchy vegetables and spicy Schezwan sauce.',
+    description:
+      'Stir-fried noodles tossed with crunchy vegetables and spicy Schezwan sauce.',
     price: 100,
     rating: 4.7,
     isAvailable: true,
@@ -152,11 +165,11 @@ const demoItems = [
     image:
       'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80',
   },
-
   {
     _id: 'food-12',
     name: 'Veg Frankie',
-    description: 'Soft Indian flatbread wrapped around spicy vegetables, onions and tasty sauces.',
+    description:
+      'Soft Indian flatbread wrapped around spicy vegetables, onions and tasty sauces.',
     price: 80,
     rating: 4.5,
     isAvailable: true,
@@ -167,43 +180,55 @@ const demoItems = [
 ];
 
 export const Menu = () => {
+  const dispatch = useDispatch();
+
+  const {
+    items,
+    categories,
+    searchQuery,
+    selectedCategory,
+    sortBy,
+    availableOnly,
+    isLoading,
+    error,
+  } = useSelector((state) => state.menu);
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const initialCategory = searchParams.get('category') || 'all';
 
-  const [items, setItems] = useState(demoItems);
-  const [categories, setCategories] = useState(demoCategories);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Filters
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [sortBy, setSortBy] = useState('default');
-  const [availableOnly, setAvailableOnly] = useState(false);
-
-  // Try API first.
-  // If MongoDB is unavailable, continue with demo data.
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await api.get('/categories');
 
         if (Array.isArray(res.data) && res.data.length > 0) {
-          setCategories(res.data);
+          dispatch(setCategories(res.data));
+        } else {
+          dispatch(setCategories(demoCategories));
         }
       } catch (err) {
         console.log('Using demo categories because API is unavailable.');
+        dispatch(setCategories(demoCategories));
       }
     };
 
     fetchCategories();
-  }, []);
+  }, [dispatch]);
 
+  // Set initial category from URL
+  useEffect(() => {
+    if (initialCategory !== selectedCategory) {
+      dispatch(setSelectedCategory(initialCategory));
+    }
+  }, [initialCategory, selectedCategory, dispatch]);
+
+  // Fetch menu
   useEffect(() => {
     const fetchMenu = async () => {
-      setLoading(true);
-      setError(null);
+      dispatch(setMenuLoading(true));
+      dispatch(setMenuError(null));
 
       try {
         const params = new URLSearchParams();
@@ -227,12 +252,11 @@ export const Menu = () => {
         const res = await api.get(`/menu?${params.toString()}`);
 
         if (Array.isArray(res.data)) {
-          setItems(res.data);
+          dispatch(setMenuItems(res.data));
         } else {
           throw new Error('Invalid menu response');
         }
       } catch (err) {
-        // Use demo data if backend/MongoDB is unavailable
         console.log('API unavailable. Using demo menu data.');
 
         let filteredItems = [...demoItems];
@@ -271,19 +295,26 @@ export const Menu = () => {
           filteredItems.sort((a, b) => b.rating - a.rating);
         }
 
-        setItems(filteredItems);
+        dispatch(setMenuItems(filteredItems));
       } finally {
-        setLoading(false);
+        dispatch(setMenuLoading(false));
       }
     };
 
     const timeout = setTimeout(fetchMenu, 300);
 
     return () => clearTimeout(timeout);
-  }, [searchQuery, selectedCategory, sortBy, availableOnly]);
+  }, [
+    searchQuery,
+    selectedCategory,
+    sortBy,
+    availableOnly,
+    dispatch,
+  ]);
 
+  // Category selection
   const handleCategorySelect = (catId) => {
-    setSelectedCategory(catId);
+    dispatch(setSelectedCategory(catId));
 
     const newParams = new URLSearchParams(searchParams);
 
@@ -296,11 +327,12 @@ export const Menu = () => {
     setSearchParams(newParams);
   };
 
+  // Reset filters
   const resetFilters = () => {
-    setSearchQuery('');
-    setSelectedCategory('all');
-    setSortBy('default');
-    setAvailableOnly(false);
+    dispatch(setSearchQuery(''));
+    dispatch(setSelectedCategory('all'));
+    dispatch(setSortBy('default'));
+    dispatch(setAvailableOnly(false));
   };
 
   return (
@@ -340,7 +372,9 @@ export const Menu = () => {
               type="text"
               placeholder="Search food by name..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) =>
+                dispatch(setSearchQuery(e.target.value))
+              }
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm font-medium transition-all"
             />
 
@@ -355,7 +389,9 @@ export const Menu = () => {
 
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) =>
+                  dispatch(setSortBy(e.target.value))
+                }
                 className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 text-sm font-semibold text-slate-700 bg-white"
               >
                 <option value="default">Sort by: Default</option>
@@ -382,7 +418,9 @@ export const Menu = () => {
               <input
                 type="checkbox"
                 checked={availableOnly}
-                onChange={(e) => setAvailableOnly(e.target.checked)}
+                onChange={(e) =>
+                  dispatch(setAvailableOnly(e.target.checked))
+                }
                 className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
               />
 
@@ -429,7 +467,7 @@ export const Menu = () => {
       </div>
 
       {/* Menu */}
-      {loading ? (
+      {isLoading ? (
         <div className="py-20 text-center space-y-3">
 
           <RefreshCw className="w-8 h-8 text-amber-500 animate-spin mx-auto" />

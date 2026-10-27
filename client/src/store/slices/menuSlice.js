@@ -1,3 +1,5 @@
+// menu slice configuration for CampusEats Experiment 3
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {

@@ -12,8 +12,7 @@ const generateToken = (id) => {
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, phone, role } = req.body;
-
+    const { name, email, password, phone } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please provide name, email and password' });
     }
@@ -23,7 +22,7 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
-    const userRole = role === 'ADMIN' ? 'ADMIN' : 'USER';
+   const userRole = 'USER';
 
     const user = await User.create({
       name,
